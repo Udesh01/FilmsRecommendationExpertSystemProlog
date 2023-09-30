@@ -1,0 +1,136 @@
+%element of List
+elem(X,[X|_]).
+elem(X,[_|Tail]) :- elem(X,Tail).
+
+
+%common element
+elems(X,[Y|_]) :- elem(Y,X).
+elems(X,[_|Tail]) :- elems(X,Tail).
+
+   
+list_movie(Director,Categories,Min,Max,Stream,Theme, L) :-
+    list_movie(Director,Categories,Min,Max,Stream,Theme, [], L).
+
+
+
+list_movie(Director,Categories,Min,Max,Stream,Theme, Acc, L) :-
+    movie(Movie,Director,Category,Length,Streamings,Themes),
+    elems(Theme,Themes),
+    elem(Stream,Streamings),
+    elem(Category,Categories),
+    Length > Min-1,
+    Length < Max+1,
+    \+ elem(Movie, Acc), !,
+    list_movie(Director,Categories,Min,Max,Stream,Theme,[Movie|Acc], L). 
+
+list_movie(_,_,_,_,_,_, L, L).
+
+%Movie Type
+suggest_movie(M) :- 
+    write('Enter your age: '),
+    read(Age),
+    get_category(Age,Categories),
+    write('Choose your mood: \n   happy   sad   angry   scared\n'),
+    read(Mood),
+    write('Choose a director from: 
+    \n   
+
+            danny_philippou       ti_west               kenneth_branagh           olivia_wilde
+            matt_reeves           damien_chazelle       mahrk_mylod               mark_mylod
+            scott_mann            daniel_scheinert      marc_forster              darren_aronofsky
+            joseph_kosinski       david_leitch          gerard_johnstone          todd_field
+            zach_cregger          jalmaru_helander      steven_spielberg          martin_mcdonagh
+            james_cameron         david_orussell        david_russell             jordan_peele
+            nathan_greno          jordan_peele          mark_osborne              parker_finn
+            sarah_polley          baz_luhrmann          zachary_wigon
+
+
+    :\n'),
+    read(Director),
+    write('Select your streaming platform: \n   Netflix   Prime  Hbogo   Disney:\n'),
+    read(Stream),
+    write('Minimum length of film in minutes: '),
+    read(Min),
+    write('Maximum length of film in minutes: '),
+    read(Max),
+    get_theme(Mood,Theme),
+    list_movie(Director,Categories,Min,Max,Stream,Theme,M).
+    
+
+%Ages
+get_category(Age,X) :- Age < 7,   X           = [a].
+get_category(Age,X) :- Age > 6,   Age < 13, X = [a,pa].
+get_category(Age,X) :- Age > 12,  Age < 16, X = [a,pa,pa17].
+get_category(Age,X) :- Age > 15,  Age < 18, X = [a,pa,pa17,z].
+get_category(Age,X) :- Age > 17,  X           = [a,pa,pa17,z,nc17].
+
+
+%Mood
+get_theme(Mood,X) :- 
+    Mood = happy, 
+    X = [horror, comedy, action, sci-fi, animation, fantasy, war, musical, romance].
+
+get_theme(Mood,X) :-
+    Mood = sad,
+    X = [comedy, family, mystery, animation, fantasy, musical].
+
+get_theme(Mood,X) :-
+    Mood = scared,
+    X = [family, fantasy,musical,comedy].
+
+get_theme(Mood,X) :-
+    Mood = angry,
+    X = [comedy,family,sci-fi,animation,drama,musical].
+
+% MOVIES_DATABASE
+movie(talk_to_me,                       danny_philippou,              z,140,                 [netflix],              [action,drama,mystery,sci-fi,thriller]).
+movie(x,                                ti_west,                      pa,140,                [netflix,prime],        [animation,adventure,comedy,family,fantasy]).
+movie(death_on_the_nile,                kenneth_branagh,              pa17,140,              [disney],               [action,adventure,comedy,fantasy,sci-fi]).
+movie(ont_worry_darling,                olivia_wilde,                 pa,140,                [disney],               [action,adventure,fantasy,sci-fi]).
+movie(the_batman_(2022),                matt_reeves,                  pa,140,                [disney],               [action,adventure,fantasy,sci-fi]).
+movie(babylon(2022),                    damien_chazelle,              pa17,140,              [netflix],              [action,adventure,sci-fi]).
+movie(avatar(2022),                     mahrk_mylod,                  pa17,140,              [hbogo],                [action,adventure,fantasy,sci-fi]).
+movie(the_menu_(2022),                  mark_mylod,                   pa,140,                [prime],                [action,adventure]).
+movie(fall(20222),                      scott_mann,                   pa17,140,              [netflix,prime],        [action,adventure]).
+movie(everything_everywhere_all_at_once_(2022),   daniel_scheinert,   pa,140,                [netflix,prime],        [action,adventure]).
+movie(a_man_called_otto_(2022),         marc_forster,                 z,140,                 [hbogo],                [comedy,horror]).
+movie(the_whale_(2022),                 darren_aronofsky,      pa17,140,      [hbogo],                               [comedy,drama,war]).
+movie(top_gun_maverick(2022),           joseph_kosinski,       a, 140,        [prime,netflix],                       [comedy,musical]).
+movie(pearl(2022),                      ti_west,               a,140,         [prime,netflix],                       [adventure,comedy,musical]).
+movie(bullet_train(2022),               david_leitch,          a,140,         [prime,netflix],                       [comedy,fantasy,musical]).
+movie(m3gan_(2022),                     gerard_johnstone,      nc17,140,      [hbogo],                               [drama,romance]).
+movie(tarl2022,                         todd_field,            pa17,140,      [netflix,disney],                      [adventure,drama,sci-fi]).
+movie(barbarian(2022),                  zach_cregger,          pa17,140,      [netflix,hbogo],                       [action,thriller,sci-fi]).
+movie(sisu(2022),                       jalmaru_helander,      pa17,140,      [prime],                               [action,thriller,drama,war]).
+movie(karkurit,                         jalmaru_helander,      pa17,140,      [netflix],                             [action,adventure,sci-fi,thriller]).
+movie(wingman,                          jalmaru_helander,      r,140,         [prime],                               [drama,mystery,thriller]).
+movie(big_game,                         jalmaru_helander,      pa17,140,      [hbogo],                               [drama,mystery,sci-fi]).
+movie(viimeninen_pisara,                jalmaru_helander,       pa17,140,      [netflix,prime],                      [drama,comedy,romance]).
+movie(maestro,                          steven_spielberg,       pa17,140,      [prime],                              [comedy,mystery,drama]).
+movie(gremlins,                         steven_spielberg,       nc-17,140,     [netflix],                            [crime]).
+movie(transformers,                     steven_spielberg,       z,140,         [hbogo],                              [drama,crime]). 
+movie(animaniacs,                       steven_spielberg,       z,140,         [netflix],                            [drama,comedy]).
+movie(the_pillowman(2022),              martin_mcdonagh,        pa17,140,      [netflix],                            [drama,romance]).
+movie(leenane_szeepe(2023),             martin_mcdonagh,        z,140,         [hbogo],                              [drama,action,war]).
+movie(in_brueges(2021),                 martin_mcdonagh,        pa17,140,      [hbogo,prime],                        [drama]).
+movie(six_shooter(2004),                martin_mcdonagh,        pa,140,        [hbogo,disney],                       [animation,action,family,comedy,sci-fi]).
+movie(hangman(2016),                    martin_mcdonagh,        pa,140,        [hbogo,disney],                       [animation,action,family,comedy,sci-fi]).
+movie(titanic,                          james_cameron,          pa17,140,      [hbogo],                              [drama,romance]).
+movie(three_kings,                      david_orussell,         pa17,140,      [hbogo],                              [action]).
+movie(the_fighter,                      david_russell,          pa17,140,      [netflix],                            [drama,romance]).
+movie(soldiers_pay(2004),               david_russell,          z,140,         [netflix],                            [drama,crime]).
+movie(joy(2015),                        david_russell,          a,140,         [hbogo],                              [animation,comedy,family]).
+movie(nope(2022),                       jordan_peele,           z,140,         [hbogo,netflix],                      [crime,drama,mystery]).
+movie(tangled,                          nathan_greno,           p,140,        [hbogo],                               [animation,comedy,family,romance,musical]).
+movie(get_out,                          jordan_peele,           z,140,         [netflix],                            [drama]).
+movie(us(2019),                         jordan_peele,           pa17,140,       [hbogo],                             [drama,mystery,sci-fi]).
+movie(wendell(2022),                    jordan_peele,           pa17,140,       [netflix],                           [drama,comedy]).
+movie(kung_fu_panda,                    mark_osborne,           pa,140,         [netflix],                           [animation,action,comedy,family]).
+movie(smile(2022),                      parker_finn,            g,140,          [netflix],                           [animation,drama]).
+movie(women_talking(2022),              sarah_polley,           pa17,140,       [hbogo],                             [action]).
+movie(elvis(2022),                      baz_luhrmann,           pa17,140,       [hbogo],                             [action,drama,crime]).
+movie(australia(2008),                  baz_luhrmann,           z,140,          [netflix],                           [drama]).
+movie(the_great_gatsby(2013),           baz_luhrmann,           z,140,          [netflix],                           [drama,war]).
+movie(ugly_chic(2012),                  baz_luhrmann,           pa17,140,       [netflix],                           [drama,romance]).
+movie(sanctuary,                        zachary_wigon,          z,140,          [netflix],                           [comedy,drama,romance]).
+movie(romeo_juliet(1996),               baz_luhrmann,           z,140,          [netflix],                           [crime,mystery,drama]).
